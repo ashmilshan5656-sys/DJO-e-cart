@@ -1,10 +1,16 @@
 /* eslint-disable react-hooks/static-components */
 import { useEffect, useMemo, useState } from 'react'
 import API from './api'
+import vivoProductImage from './assets/vivo-x-fold-6-5g.jpeg'
 import './App.css'
 
 const money = (value) => `₹${Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
-const productImageUrl = (image) => image ? new URL(image, API.defaults.baseURL).href : ''
+const productImageUrl = (image, name) => {
+    if (name?.trim().toLowerCase() === 'vivo x fold 6 5g') return vivoProductImage
+    if (!image) return ''
+    const baseURL = API.defaults.baseURL.startsWith('http') ? API.defaults.baseURL : window.location.origin
+    return new URL(image, baseURL).href
+}
 
 function App() {
     const [user, setUser] = useState(localStorage.getItem('username') || '')
@@ -30,7 +36,7 @@ function App() {
         try {
             const { data } = await API.get('products/')
             const items = Array.isArray(data) ? data : data.results || []
-            setProducts(items.map((product) => ({ ...product, image: productImageUrl(product.image) })))
+            setProducts(items.map((product) => ({ ...product, image: productImageUrl(product.image, product.name) })))
         } catch { setError('Could not load products. Start the Django server, then refresh.') }
         finally { setLoading(false) }
     }
