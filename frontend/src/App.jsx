@@ -1,12 +1,24 @@
 /* eslint-disable react-hooks/static-components */
 import { useEffect, useMemo, useState } from 'react'
 import API from './api'
+import iphoneProductImage from './assets/iphone-18-pro.jpeg'
+import jblProductImage from './assets/jbl-partybox-710.jpeg'
+import lenovoProductImage from './assets/lenovo-loq.jpeg'
+import samsungProductImage from './assets/samsung-s25-ultra.jpeg'
 import vivoProductImage from './assets/vivo-x-fold-6-5g.jpeg'
 import './App.css'
 
 const money = (value) => `₹${Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+const localProductImages = {
+    'vivo x fold 6 5g': vivoProductImage,
+    'iphone 18 pro': iphoneProductImage,
+    'samsung s25 ultra': samsungProductImage,
+    'lenovo loq laptop': lenovoProductImage,
+    'jbl speaker': jblProductImage,
+}
 const productImageUrl = (image, name) => {
-    if (name?.trim().toLowerCase() === 'vivo x fold 6 5g') return vivoProductImage
+    const localImage = localProductImages[name?.trim().toLowerCase()]
+    if (localImage) return localImage
     if (!image) return ''
     const baseURL = API.defaults.baseURL.startsWith('http') ? API.defaults.baseURL : window.location.origin
     return new URL(image, baseURL).href
